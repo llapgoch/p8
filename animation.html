@@ -1,0 +1,53 @@
+
+<!-- saved from url=(0027)http://fun.jordih.net/moon/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Moon Phase Animation</title>
+        
+        <script src="js/InteractiveCanvas.js"></script>
+        <script src="js/MoonPhaseImage.js"></script>
+        <script src="js/MoonOrbitImage.js"></script>
+        <script src="js/MoonPhaseAnimation.js"></script>
+        <script>
+
+            function showToday() {
+                animation.stop();
+                animation.setLunarDay(0);
+                animation.setTerranHour(02);
+                animation.draw();
+            }
+
+        </script>
+    </head>
+    <body>
+        <h3>Moon Phase Illustration</h3>
+
+        <p>
+            <input type="button" value="start animation" onclick="animation.start();">
+            <input type="button" value="stop animation" onclick="animation.stop();
+                                ">
+            <input type="button" value="show today" onclick="showToday();">
+            <strong>Click-and-drag</strong> or <strong>double-click</strong> on orbit image to 
+            manually change phase or start animation to see full orbit progression.
+        </p>
+
+        <canvas id="orbit" width="400" height="400">
+            Your browser doesn't support canvas. Sorry, no drawings for you.
+        </canvas>
+        <canvas id="moon" width="600" height="400">
+            Your browser doesn't support canvas. Sorry, no drawings for you.
+        </canvas>
+        <p>
+            The moon is currently 0 days through its cycle (% full)
+        </p>
+
+
+    
+    <script>
+        var animation = new MoonPhaseAnimation('moon', 'orbit');
+        showToday();
+    </script>
+
+
+
+
+</body></html>

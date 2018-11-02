@@ -1,0 +1,10 @@
+MoonPhaseImage.calculateDecimal = function(start, end, value){
+	var range = end - start;
+	value = Math.max(start, Math.min(end, value));
+	return (value - start)/range;
+}
+
+// Calculate X Position offset due to shadow size
+if(viewAngle >= MoonPhaseAnimation.NOON && viewAngle <= MoonPhaseAnimation.DAWN){
+    console.log(MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.DAWN, viewAngle));
+}
