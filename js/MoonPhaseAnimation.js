@@ -28,6 +28,7 @@ MoonPhaseAnimation.MIDNIGHT = Math.PI;
 MoonPhaseAnimation.NOON = 0.0;
 MoonPhaseAnimation.DAWN = Math.PI * 1 / 2;
 MoonPhaseAnimation.DUSK = Math.PI * 3 / 2;
+MoonPhaseAnimation.COMPLETE = Math.PI * 2;
 
 
 /**
@@ -59,7 +60,6 @@ MoonPhaseAnimation.prototype.draw = function() {
     this.moonImage.draw(this.viewingAngle, this.hourAngle, angles);
 
 };
-
 
 /**
  * start animation 

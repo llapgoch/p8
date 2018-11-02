@@ -15,6 +15,19 @@ MoonPhaseImage.SHADOW_OFFSET = 50;
 MoonPhaseImage.SHADOW_SIZE = 60;
 
 
+MoonPhaseImage.calculateDecimal = function(start, end, value, flip){
+	var range = end - start;
+	flip = flip == true ? true : false;
+	value = Math.max(start, Math.min(end, value));
+	var decimal = (value - start)/range;
+
+	if(flip){
+		return 1 - decimal;
+	}
+
+	return decimal;
+}
+
 /**
  * draw moon phase
  */
@@ -97,6 +110,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	var darkAngle = shadowAngle - Math.PI/2; 
 	var d_bright =  MoonPhaseImage.MOON_RADIUS * Math.sin(darkAngle);
 	var l_bright = MoonPhaseImage.MOON_RADIUS + d_bright;
+	var xOffset = 0;
 
 	// determine overlaping shaded circle given edge of shadow
 	var l_dark = MoonPhaseImage.MOON_RADIUS - l_bright;
@@ -112,6 +126,24 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
         return rad / 0.0174533;
     };
 
+		// Calculate X Position offset due to shadow size
+	if(viewAngle >= MoonPhaseAnimation.NOON && viewAngle <= MoonPhaseAnimation.DAWN){
+		xOffset = -(MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.DAWN, viewAngle) / 2)
+	}
+
+	if(viewAngle >= MoonPhaseAnimation.DAWN && viewAngle <= MoonPhaseAnimation.MIDNIGHT){
+		xOffset = -(MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DAWN, MoonPhaseAnimation.MIDNIGHT, viewAngle, true) / 2)
+	}
+
+	if(viewAngle >= MoonPhaseAnimation.MIDNIGHT && viewAngle <= MoonPhaseAnimation.DUSK){
+		xOffset = (MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, MoonPhaseAnimation.DUSK, viewAngle, false) / 2)
+	}
+
+	
+	if(viewAngle >= MoonPhaseAnimation.DUSK && viewAngle <= MoonPhaseAnimation.COMPLETE){
+		xOffset = (MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DUSK, MoonPhaseAnimation.COMPLETE, viewAngle, true) / 2)
+	}
+
 	// moon image for moon-phase shading	
 	ctx.drawImage(this.moonImg, moonX-MoonPhaseImage.MOON_RADIUS, moonY-MoonPhaseImage.MOON_RADIUS, MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*2);
 	
@@ -121,20 +153,13 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	// special math case, exactly half full
 	if ( Math.abs(viewAngle - MoonPhaseAnimation.DAWN) < 0.00001 || Math.abs(viewAngle - MoonPhaseAnimation.DUSK) < 0.00001 ) { 		
 		if (isWaxing){
-			console.log("WAXING");
-			ctx.fillRect(moonX-MoonPhaseImage.MOON_RADIUS*2, moonY-MoonPhaseImage.MOON_RADIUS*2, (MoonPhaseImage.MOON_RADIUS*2)-MoonPhaseImage.SHADOW_SIZE, MoonPhaseImage.MOON_RADIUS*4);
+			ctx.fillRect(moonX-MoonPhaseImage.MOON_RADIUS*2, moonY-MoonPhaseImage.MOON_RADIUS*2, (MoonPhaseImage.MOON_RADIUS*2)+xOffset, MoonPhaseImage.MOON_RADIUS*4);
 		}else{
-			console.log("WANING");
-		
-			ctx.fillRect(moonX, moonY-MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*4);
-		
+			ctx.fillRect(moonX + xOffset, moonY-MoonPhaseImage.MOON_RADIUS*2, (MoonPhaseImage.MOON_RADIUS*2), MoonPhaseImage.MOON_RADIUS*4);
 		}
 		return;
 	}	
 
-	
-
-	
 	if (isWaxing)
 		l_offset = -l_offset;
 	
@@ -152,7 +177,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		ctx.beginPath();	
 
 
-		ctx.arc(moonX - l_offset, moonY, shadow_radius+10, 0, 2*Math.PI);         
+		ctx.arc((moonX - l_offset) + xOffset, moonY, shadow_radius+10, 0, 2*Math.PI);         
 		ctx.clip();
 		
 		ctx.drawImage(this.moonImg, moonX-MoonPhaseImage.MOON_RADIUS, moonY-MoonPhaseImage.MOON_RADIUS, MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*2);        
@@ -163,7 +188,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		ctx.lineWidth = 100;
 		ctx.shadowOffsetY = 0;
 		ctx.shadowColor="black";	
-		ctx.arc(moonX - l_offset, moonY, shadow_radius+(100/2), 0, 2*Math.PI); 
+		ctx.arc((moonX - l_offset) + xOffset, moonY, shadow_radius+(100/2), 0, 2*Math.PI); 
 		ctx.stroke();
 	
 
@@ -172,11 +197,10 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 
 	}
 	else {	
-		console.log(l_offset);
 		// clip and higlight gibbous region of moon			
 		ctx.beginPath();		
 		ctx.fillStyle = 'black';
-		ctx.arc(moonX + l_offset, moonY, shadow_radius, 0, 2*Math.PI); 
+		ctx.arc(moonX + l_offset + xOffset, moonY, shadow_radius, 0, 2*Math.PI); 
 		ctx.fill();	
 	}
 		
