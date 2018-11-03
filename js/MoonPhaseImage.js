@@ -6,13 +6,29 @@
 function MoonPhaseImage(canvasDivId)
 {	
 	this.canvas = new InteractiveCanvas(canvasDivId);
+	this.$canvasElement = $('#' + canvasDivId);
+
 	this.moonImg = null;
+	this.isSafariDesktop = this.detectSafariDesktop();
+	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
 	this.ctx = null;
+	// Safari borks at first and last quarters otherwise
+	this.precipice = this.isSafariDesktop ? 0.01 : 0.00001;
+	this.shadowSize = MoonPhaseImage.SHADOW_SIZE;
+
+	// Safari & Firefox do shadows different
+	if(this.isSafariDesktopOrFireFox){
+		this.shadowSize = MoonPhaseImage.SHADOW_SIZE / 2;
+	}
 }
 MoonPhaseImage.MOON_RADIUS = 350;
 MoonPhaseImage.IMAGE_URL = 'moon.png'; 
 MoonPhaseImage.SHADOW_OFFSET = 50;
+// Safari is funny about the shadow size value with certain curves, beware (33 if all else fails)
 MoonPhaseImage.SHADOW_SIZE = 60;
+MoonPhaseImage.BRIGHTNESS_LOW = 20;
+MoonPhaseImage.BRIGHTNESS_HIGH = 150;
+
 
 
 MoonPhaseImage.calculateDecimal = function(start, end, value, flip){
@@ -28,11 +44,28 @@ MoonPhaseImage.calculateDecimal = function(start, end, value, flip){
 	return decimal;
 }
 
+MoonPhaseImage.prototype.detectSafari = function(){
+	return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+}
+
+MoonPhaseImage.prototype.detectIos = function(){
+	return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+MoonPhaseImage.prototype.detectSafariDesktop = function(){
+	return this.detectSafari() &! this.detectIos();
+}
+
+MoonPhaseImage.prototype.detectFirefox = function(){
+	return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+}
+
 /**
  * draw moon phase
  */
 MoonPhaseImage.prototype.draw = function(viewAngle, hourAngle, extraAngles) {
 	var self = this;
+
 	// load image on-demand
 	if (this.moonImg == null) {
 		this.moonImg = new Image();
@@ -50,11 +83,14 @@ MoonPhaseImage.prototype.draw = function(viewAngle, hourAngle, extraAngles) {
  * @param float
  */
 MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) {
-	
 	var ctx = this.canvas.getContext();	
 	// ctx.save();
 
 	// ctx.restore();
+
+	if(viewAngle > 1.566 && viewAngle <= 1.579){
+	//	viewAngle = 1.58;
+	}
 
 	var height = this.canvas.getHeight();
 	var width = this.canvas.getWidth();
@@ -106,7 +142,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	}	
 
 	
-	ctx.shadowBlur=MoonPhaseImage.SHADOW_SIZE;
+	ctx.shadowBlur=this.shadowSize;
 	ctx.shadowOffsetX = isWaxing ? MoonPhaseImage.SHADOW_OFFSET : -MoonPhaseImage.SHADOW_OFFSET;
 	ctx.shadowColor="black";
 
@@ -139,24 +175,36 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 
 	var radiansToDegrees = function(rad){
         return rad / 0.0174533;
-    };
+	};
+	var brightness = 100;
 
 		// Calculate X Position offset due to shadow size
 	if(viewAngle >= MoonPhaseAnimation.NOON && viewAngle < MoonPhaseAnimation.DAWN){
-		xOffset = -(MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.DAWN, viewAngle) / 2)
+		xOffset = -(this.shadowSize * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.DAWN, viewAngle) / 2)
 	}
 
 	if(viewAngle >= MoonPhaseAnimation.DAWN && viewAngle <= MoonPhaseAnimation.MIDNIGHT){
-		xOffset = -(MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DAWN, MoonPhaseAnimation.MIDNIGHT, viewAngle, true) / 2)
+		xOffset = -(this.shadowSize * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DAWN, MoonPhaseAnimation.MIDNIGHT, viewAngle, true) / 2)
 	}
 
 	if(viewAngle > MoonPhaseAnimation.MIDNIGHT && viewAngle < MoonPhaseAnimation.DUSK){
-		xOffset = (MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, MoonPhaseAnimation.DUSK, viewAngle, false) / 2)
+		xOffset = (this.shadowSize * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, MoonPhaseAnimation.DUSK, viewAngle, false) / 2)
 	}
 
 	if(viewAngle >= MoonPhaseAnimation.DUSK && viewAngle < MoonPhaseAnimation.COMPLETE){
-		xOffset = (MoonPhaseImage.SHADOW_SIZE * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DUSK, MoonPhaseAnimation.COMPLETE, viewAngle, true) / 2)
+		xOffset = (this.shadowSize * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.DUSK, MoonPhaseAnimation.COMPLETE, viewAngle, true) / 2)
 	}
+
+	if(isWaxing){
+		brightness = MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.MIDNIGHT, viewAngle, false);
+	}else{
+		brightness = MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, MoonPhaseAnimation.COMPLETE, viewAngle, true);
+	}
+
+	var brightnessRange = (MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW);
+	//brightness = MoonPhaseImage.BRIGHTNESS_LOW + (brightnessRange * brightness);
+
+	//this.$canvasElement.css('filter', 'brightness(' + brightness + '%)');
 
 	// moon image for moon-phase shading	
 	ctx.drawImage(this.moonImg, moonX-MoonPhaseImage.MOON_RADIUS, moonY-MoonPhaseImage.MOON_RADIUS, MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*2);
@@ -164,12 +212,17 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	ctx.fillStyle = 'black';
 	//ctx.fillStyle = 'rgba(0,0,0,.75)';
 	
+	
 	// special math case, exactly half full
-	if ( Math.abs(viewAngle - MoonPhaseAnimation.DAWN) < 0.00001 || Math.abs(viewAngle - MoonPhaseAnimation.DUSK) < 0.00001 ) { 		
+	if ( Math.abs(viewAngle - MoonPhaseAnimation.DAWN) < this.precipice || Math.abs(viewAngle - MoonPhaseAnimation.DUSK) < this.precipice ) { 		
 		if (isWaxing){
+			console.log("spec");
 			ctx.fillRect(moonX-MoonPhaseImage.MOON_RADIUS*2, moonY-MoonPhaseImage.MOON_RADIUS*2, (MoonPhaseImage.MOON_RADIUS*2)+xOffset, MoonPhaseImage.MOON_RADIUS*4);
+			// window.animation.stop();
 		}else{
+			console.log("spec");
 			ctx.fillRect(moonX + xOffset, moonY-MoonPhaseImage.MOON_RADIUS*2, (MoonPhaseImage.MOON_RADIUS*2), MoonPhaseImage.MOON_RADIUS*4);
+			// window.animation.stop();
 		}
 		return;
 	}	
@@ -177,6 +230,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	if (isWaxing){
 		l_offset = -l_offset;
 	}
+
 	
 	// draw overlapping shadow circle
 	if (isGibbous) {
@@ -187,6 +241,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		}else{
 			shadowOffset = -(MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, 3.7, viewAngle, false))
 		}
+		
 
 		// create a shadow moon
 		ctx.fillStyle = 'black';
@@ -204,14 +259,18 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		
 		ctx.drawImage(this.moonImg, moonX-MoonPhaseImage.MOON_RADIUS, moonY-MoonPhaseImage.MOON_RADIUS, MoonPhaseImage.MOON_RADIUS*2, MoonPhaseImage.MOON_RADIUS*2);        
 		ctx.restore();
+		ctx.shadowBlur = this.shadowSize;
+		ctx.shadowOffsetX = shadowOffset
+		ctx.shadowOffsetY = 0;
+
 		ctx.strokeStyle = "black";
 		ctx.beginPath();	
-		ctx.shadowBlur=MoonPhaseImage.SHADOW_SIZE;
-		ctx.shadowOffsetX = shadowOffset
+		
 		ctx.lineWidth = 100;
-		ctx.shadowOffsetY = 0;
+		
 		ctx.shadowColor="black";	
-		ctx.arc(Math.floor(xStart), moonY, shadow_radius+(100/2), 0, 2*Math.PI); 
+		// The -1 is for safari, otherwise it goes wrong at certain points
+		ctx.arc(Math.floor(xStart), moonY, shadow_radius+(100/2), -1, 2*Math.PI); 
 		ctx.stroke();
 
 	
@@ -222,11 +281,10 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		// clip and higlight gibbous region of moon			
 		ctx.beginPath();		
 		ctx.fillStyle = 'black';
-		ctx.arc(moonX + l_offset + xOffset, moonY, shadow_radius, 0, 2*Math.PI); 
+		// The -1 is for safari, otherwise it goes wrong at certain points
+		ctx.arc(moonX + l_offset + xOffset, moonY, shadow_radius, -1, 2*Math.PI); 
 		ctx.fill();	
 	}
-
-
 };
 
 

@@ -36,6 +36,7 @@
         .moon-container{
             width:100%;
             height:100vh;
+            max-height: 850px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -59,7 +60,15 @@
         </style>
     </head>
     <body>
-        <canvas id="orbit" width="200" height="200" style="display:none">
+            <p>
+                    <input type="button" value="start animation" onclick="animation.start();">
+                    <input type="button" value="stop animation" onclick="animation.stop();
+                                        ">
+                    <input type="button" value="show today" onclick="showToday();">
+                    <strong>Click-and-drag</strong> or <strong>double-click</strong> on orbit image to 
+                    manually change phase or start animation to see full orbit progression.
+                </p>
+        <canvas id="orbit" width="200" height="200">
             Your browser doesn't support canvas. Sorry, no drawings for you.
         </canvas>
         <div class="moon-container">
@@ -78,7 +87,8 @@
     
     <script>
         var animation = new MoonPhaseAnimation('moon', 'orbit');
-        animation.start();
+        animation.draw();
+       animation.start();
     </script>
 
 
