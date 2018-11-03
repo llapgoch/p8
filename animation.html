@@ -6,36 +6,31 @@
         <script src="js/InteractiveCanvas.js"></script>
         <script src="js/MoonPhaseImage.js"></script>
         <script src="js/MoonOrbitImage.js"></script>
-        <script src="js/MoonPhaseAnimation.js"></script>
-        <script>
+        <script src="js//MoonPhaseAnimation.js"></script>
 
-            function showToday() {
-                animation.stop();
-                animation.setLunarDay(0);
-                animation.setTerranHour(02);
-                animation.draw();
-            }
-
-        </script>
+        <style>
+        .moon-container{
+            width:100vh;
+            height:100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .moon-container canvas {
+            width: auto;
+            height: 90%;
+        }
+        </style>
     </head>
-    <body>
-        <h3>Moon Phase Illustration</h3>
-
-        <p>
-            <input type="button" value="start animation" onclick="animation.start();">
-            <input type="button" value="stop animation" onclick="animation.stop();
-                                ">
-            <input type="button" value="show today" onclick="showToday();">
-            <strong>Click-and-drag</strong> or <strong>double-click</strong> on orbit image to 
-            manually change phase or start animation to see full orbit progression.
-        </p>
-
-        <canvas id="orbit" width="400" height="400">
+    <body style="background: black">
+        <canvas id="orbit" width="200" height="200" style="display:none">
             Your browser doesn't support canvas. Sorry, no drawings for you.
         </canvas>
-        <canvas id="moon" width="600" height="400">
-            Your browser doesn't support canvas. Sorry, no drawings for you.
-        </canvas>
+        <div class="moon-container">
+            <canvas id="moon" width="700" height="700">
+                Your browser doesn't support canvas. Sorry, no drawings for you.
+            </canvas>
+        </div>
         <p>
             The moon is currently 0 days through its cycle (% full)
         </p>
@@ -44,7 +39,7 @@
     
     <script>
         var animation = new MoonPhaseAnimation('moon', 'orbit');
-        showToday();
+        animation.start();
     </script>
 
 
