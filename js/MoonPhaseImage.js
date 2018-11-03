@@ -10,12 +10,12 @@ function MoonPhaseImage(canvasDivId)
 	this.moonImg = null;
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
-	this.shadowSize = 30; //this.isSafariDesktopOrFireFox ? 36 : 60;
+	this.shadowSize = 36; //this.isSafariDesktopOrFireFox ? 36 : 60;
 	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
 MoonPhaseImage.MOON_RADIUS = 350;
 MoonPhaseImage.IMAGE_URL = 'moon.png'; 
-MoonPhaseImage.SHADOW_OFFSET = 50;
+MoonPhaseImage.SHADOW_OFFSET = 36;
 MoonPhaseImage.BRIGHTNESS_LOW = 80;
 MoonPhaseImage.BRIGHTNESS_HIGH = 150;
 
