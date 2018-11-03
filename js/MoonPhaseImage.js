@@ -6,14 +6,18 @@
 function MoonPhaseImage(canvasDivId)
 {	
 	this.canvas = new InteractiveCanvas(canvasDivId);
+	this.$canvasElement = $('#' + canvasDivId);
 	this.moonImg = null;
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
 	this.shadowSize = this.isSafariDesktopOrFireFox ? 37 : 60;
+	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
 MoonPhaseImage.MOON_RADIUS = 350;
 MoonPhaseImage.IMAGE_URL = 'moon.png'; 
 MoonPhaseImage.SHADOW_OFFSET = 50;
+MoonPhaseImage.BRIGHTNESS_LOW = 80;
+MoonPhaseImage.BRIGHTNESS_HIGH = 150;
 
 MoonPhaseImage.prototype.detectSafari = function(){
 	return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
@@ -69,9 +73,7 @@ MoonPhaseImage.prototype.draw = function(viewAngle, hourAngle, extraAngles) {
 MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) {
 	
 	var ctx = this.canvas.getContext();	
-	// ctx.save();
-
-	// ctx.restore();
+	var brightness;
 
 	var height = this.canvas.getHeight();
 	var width = this.canvas.getWidth();
@@ -120,7 +122,13 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	var isWaxing = false;
 	if (viewAngle < Math.PI) {
 		isWaxing = true;
-	}	
+		brightness = MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, MoonPhaseAnimation.MIDNIGHT, viewAngle, false);
+	} else {
+		brightness = MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, MoonPhaseAnimation.COMPLETE, viewAngle, true);
+	}
+
+	brightness = MoonPhaseImage.BRIGHTNESS_LOW + (this.brightnessRange * brightness);
+	this.$canvasElement.css('filter', 'brightness(' + brightness + '%)');
 
 	
 	ctx.shadowBlur=this.shadowSize;
