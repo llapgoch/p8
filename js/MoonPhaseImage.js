@@ -10,7 +10,7 @@ function MoonPhaseImage(canvasDivId)
 	this.moonImg = null;
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
-	this.shadowSize = this.isSafariDesktopOrFireFox ? 36 : 60;
+	this.shadowSize = 30; //this.isSafariDesktopOrFireFox ? 36 : 60;
 	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
 MoonPhaseImage.MOON_RADIUS = 350;
@@ -235,11 +235,10 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		ctx.lineWidth = lineWidth;
 		ctx.shadowOffsetY = 0;
 		ctx.shadowColor="black";	
-		// 0.01 is a magic number to make safari still render the shadow
+		// 0.001 is a magic number to make safari still render the shadow
 		ctx.arc(Math.floor(xStart), moonY, shadow_radius+(lineWidth/2), -0.001, 2*Math.PI); 
 		ctx.stroke();
-	}
-	else {	
+	} else {	
 		// clip and higlight gibbous region of moon			
 		ctx.beginPath();		
 		ctx.fillStyle = 'black';
