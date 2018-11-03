@@ -69,7 +69,7 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	//var moonProgress = (hourAngle-extraAngles.dawn)/(extraAngles.dusk-extraAngles.dawn);
 	if(!MoonPhaseImage.doneClip){
 		ctx.beginPath();
-		ctx.arc(moonX, moonY, MoonPhaseImage.MOON_RADIUS + 2, 0, 2*Math.PI); 
+		ctx.arc(moonX, moonY, MoonPhaseImage.MOON_RADIUS + 1, 0, 2*Math.PI); 
 	// ctx.fill();
 		ctx.clip();
 		MoonPhaseImage.doneClip = true;

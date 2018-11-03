@@ -7,22 +7,58 @@
         <script src="js/MoonPhaseImage.js"></script>
         <script src="js/MoonOrbitImage.js"></script>
         <script src="js//MoonPhaseAnimation.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script>
+            function resizeShadow(){
+                var $moon = $('.moon-container canvas');
+                var $moonShadow = $('.moon-shadow');
+                $moonShadow.css({
+                    'width': $moon.width(),
+                    'height': $moon.height()
+                });
+            }
+            $(window).on('resize', function(ev){
+                resizeShadow();
+            });
 
+            $(document).on('ready', function(){
+                resizeShadow();
+            });
+        </script>
         <style>
+            body{
+                background: url(stars.jpg) black;
+                background-size: contain;
+                background-position: top center;
+                background-repeat: no-repeat;
+            }
         .moon-container{
-            width:100vh;
+            width:100%;
             height:100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 30vh;
+            position: relative;
         }
         .moon-container canvas {
             width: auto;
             height: 90%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .moon-shadow{
+            position: absolute;
+            border-radius: 50%;
+            background-color: black;
+            z-index: 1;
+            box-shadow: -1px -1px 100px 30px black;
         }
         </style>
     </head>
-    <body style="background: black">
+    <body>
         <canvas id="orbit" width="200" height="200" style="display:none">
             Your browser doesn't support canvas. Sorry, no drawings for you.
         </canvas>
@@ -30,6 +66,9 @@
             <canvas id="moon" width="700" height="700">
                 Your browser doesn't support canvas. Sorry, no drawings for you.
             </canvas>
+            <div class="moon-shadow">
+                <div class="moon-shadow-inner"></div>
+            </div>
         </div>
         <p>
             The moon is currently 0 days through its cycle (% full)
