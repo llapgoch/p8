@@ -10,7 +10,7 @@ function MoonPhaseImage(canvasDivId)
 	this.moonImg = null;
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
-	this.shadowSize = this.isSafariDesktopOrFireFox ? 37 : 60;
+	this.shadowSize = this.isSafariDesktopOrFireFox ? 36 : 60;
 	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
 MoonPhaseImage.MOON_RADIUS = 350;
@@ -207,9 +207,9 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		var shadowOffset = MoonPhaseImage.SHADOW_OFFSET;
 		var lineWidth = 100;
 		if(isWaxing){
-			shadowOffset = (MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(2.5, MoonPhaseAnimation.MIDNIGHT, viewAngle, true))
+			shadowOffset = (MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(2.7, MoonPhaseAnimation.MIDNIGHT, viewAngle, true))
 		}else{
-			shadowOffset = -(MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, 3.7, viewAngle, false))
+			shadowOffset = -(MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.MIDNIGHT, 3.6, viewAngle, false))
 		}
 
 		// create a shadow moon
@@ -232,11 +232,11 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		ctx.beginPath();	
 		ctx.shadowBlur=this.shadowSize;
 		ctx.shadowOffsetX = shadowOffset
-		ctx.lineWidth = 100;
+		ctx.lineWidth = lineWidth;
 		ctx.shadowOffsetY = 0;
 		ctx.shadowColor="black";	
 		// 0.01 is a magic number to make safari still render the shadow
-		ctx.arc(Math.floor(xStart), moonY, shadow_radius+(100/2), -0.001, 2*Math.PI); 
+		ctx.arc(Math.floor(xStart), moonY, shadow_radius+(lineWidth/2), -0.001, 2*Math.PI); 
 		ctx.stroke();
 	}
 	else {	

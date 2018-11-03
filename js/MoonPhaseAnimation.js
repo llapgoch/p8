@@ -5,7 +5,7 @@
  */
 function MoonPhaseAnimation(moonDivId, orbitDivId) {
 
-    this.viewingAngle = 1;
+    this.viewingAngle = 3.14;
     this.hourAngle = Math.PI;
     this.speed = 20;
 
@@ -124,7 +124,7 @@ MoonPhaseAnimation.prototype.setTerranHour = function(hour) {
  */
 MoonPhaseAnimation.prototype.incrementHour = function() {
 
-    var hourPerIncrement = 0.25;
+    var hourPerIncrement = 0.35;
     var nextTerranHour = this.hourAngle + hourPerIncrement / 24.0 * 2 * Math.PI;
     this.setHourAngle(nextTerranHour);
 
