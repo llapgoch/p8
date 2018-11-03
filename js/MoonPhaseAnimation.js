@@ -124,7 +124,7 @@ MoonPhaseAnimation.prototype.setTerranHour = function(hour) {
  */
 MoonPhaseAnimation.prototype.incrementHour = function() {
 
-    var hourPerIncrement = 0.1;
+    var hourPerIncrement = 0.25;
     var nextTerranHour = this.hourAngle + hourPerIncrement / 24.0 * 2 * Math.PI;
     this.setHourAngle(nextTerranHour);
 
