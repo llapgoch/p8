@@ -77,7 +77,6 @@ MoonPhaseImage.prototype.draw = function(viewAngle, hourAngle, extraAngles) {
  * @param float
  */
 MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) {
-	console.log(viewAngle);
 	var ctx = this.canvas.getContext();	
 	var brightness;
 
