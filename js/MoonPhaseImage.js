@@ -17,7 +17,7 @@ function MoonPhaseImage(canvasDivId)
 }
 MoonPhaseImage.MOON_RADIUS = 350;
 MoonPhaseImage.IMAGE_URL = 'moon.png'; 
-MoonPhaseImage.SHADOW_OFFSET = 36;
+MoonPhaseImage.SHADOW_OFFSET = 59;
 MoonPhaseImage.BRIGHTNESS_LOW = 80;
 MoonPhaseImage.BRIGHTNESS_HIGH = 150;
 
@@ -77,7 +77,7 @@ MoonPhaseImage.prototype.draw = function(viewAngle, hourAngle, extraAngles) {
  * @param float
  */
 MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) {
-	
+	console.log(viewAngle);
 	var ctx = this.canvas.getContext();	
 	var brightness;
 

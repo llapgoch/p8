@@ -5,7 +5,7 @@
  */
 function MoonPhaseAnimation(moonDivId, orbitDivId) {
 
-    this.viewingAngle = 0;
+    this.viewingAngle = 0.6950583136963534;
     this.hourAngle = Math.PI;
     this.speed = 30;
 
