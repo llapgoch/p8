@@ -11,7 +11,7 @@ function MoonPhaseImage(canvasDivId)
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
 	this.isChrome = this.detectChrome();
-	this.shadowSize = this.isChrome ? 60 : 36;
+	this.shadowSize = this.isChrome ? 50 : 36;
 	//TODO: Change offset for IE
 	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
@@ -138,9 +138,12 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 
 	
 	ctx.shadowBlur=this.shadowSize;
-	ctx.shadowOffsetX = isWaxing ? MoonPhaseImage.SHADOW_OFFSET : -MoonPhaseImage.SHADOW_OFFSET;
+	
 	ctx.shadowColor="black";
 
+	if(isWaxing){
+		ctx.shadowOffsetX = (MoonPhaseImage.SHADOW_OFFSET * MoonPhaseImage.calculateDecimal(MoonPhaseAnimation.NOON, 0.1, viewAngle, false))
+	}
 
 	// determine arc influence (gibbous vs cresent)
 	var shadowAngle = viewAngle;
@@ -150,8 +153,6 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 		shadowAngle = Math.PI - viewAngle;
 	}		
 
-	
-	
 	// determine edge of shadow from current viewing angle			
 	var darkAngle = shadowAngle - Math.PI/2; 
 	var d_bright =  MoonPhaseImage.MOON_RADIUS * Math.sin(darkAngle);
@@ -162,15 +163,6 @@ MoonPhaseImage.prototype._doDraw = function (viewAngle, hourAngle, extraAngles) 
 	var l_dark = MoonPhaseImage.MOON_RADIUS - l_bright;
 	var l_offset = (Math.pow(MoonPhaseImage.MOON_RADIUS, 2) - Math.pow(l_dark, 2)) / (2 * l_dark);
 	var shadow_radius = l_dark + l_offset;
-	
-
-	var degreesToRadians = function(deg){
-        return deg * 0.0174533;
-	};
-
-	var radiansToDegrees = function(rad){
-        return rad / 0.0174533;
-    };
 
 		// Calculate X Position offset due to shadow size
 	if(viewAngle >= MoonPhaseAnimation.NOON && viewAngle < MoonPhaseAnimation.DAWN){
