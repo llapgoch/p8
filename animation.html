@@ -40,7 +40,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 10vh;
             position: relative;
         }
         .moon-container canvas {
@@ -65,13 +64,21 @@
             height: 25%;
         }
 
-        .logo-container img{
+        .logo-container img, .logo-container-top img{
             height: 100%;
+        }
+
+        .logo-container-top{
+            text-align: center;
+            height: 130px;
+            padding-top: 30px;
         }
         </style>
     </head>
     <body>
-    
+             <div class="logo-container-top">
+                    <img src="logo3.png" />
+                </div> -->
             <p style="display: none">
                     <input type="button" value="start animation" onclick="animation.start();">
                     <input type="button" value="stop animation" onclick="animation.stop();
@@ -84,9 +91,9 @@
             Your browser doesn't support canvas. Sorry, no drawings for you.
         </canvas>
         <div class="moon-container">
-                <div class="logo-container">
+                <!-- <div class="logo-container">
                     <img src="logo3.png" />
-                </div>
+                </div> -->
             <canvas id="moon" width="700" height="700">
                 Your browser doesn't support canvas. Sorry, no drawings for you.
             </canvas>
