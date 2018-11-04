@@ -10,7 +10,9 @@ function MoonPhaseImage(canvasDivId)
 	this.moonImg = null;
 	this.ctx = null;
 	this.isSafariDesktopOrFireFox = this.detectSafariDesktop() || this.detectFirefox();
-	this.shadowSize = 36; //this.isSafariDesktopOrFireFox ? 36 : 60;
+	this.isChrome = this.detectChrome();
+	this.shadowSize = this.isChrome ? 60 : 36;
+	//TODO: Change offset for IE
 	this.brightnessRange = MoonPhaseImage.BRIGHTNESS_HIGH - MoonPhaseImage.BRIGHTNESS_LOW;
 }
 MoonPhaseImage.MOON_RADIUS = 350;
@@ -21,6 +23,10 @@ MoonPhaseImage.BRIGHTNESS_HIGH = 150;
 
 MoonPhaseImage.prototype.detectSafari = function(){
 	return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+}
+
+MoonPhaseImage.prototype.detectChrome = function(){
+	return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 }
 
 MoonPhaseImage.prototype.detectIos = function(){

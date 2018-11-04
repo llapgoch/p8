@@ -7,7 +7,7 @@ function MoonPhaseAnimation(moonDivId, orbitDivId) {
 
     this.viewingAngle = 3.14;
     this.hourAngle = Math.PI;
-    this.speed = 20;
+    this.speed = 30;
 
     this.moonImage = new MoonPhaseImage(moonDivId);
     this.orbitImage = new MoonOrbitImage(orbitDivId);
