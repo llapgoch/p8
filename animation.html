@@ -57,9 +57,21 @@
             z-index: 1;
             box-shadow: -1px -1px 100px 30px black;
         }
+
+        .logo-container{
+            text-align: center;
+            position: absolute;
+            z-index: 100;
+            height: 25%;
+        }
+
+        .logo-container img{
+            height: 100%;
+        }
         </style>
     </head>
     <body>
+    
             <p style="display: none">
                     <input type="button" value="start animation" onclick="animation.start();">
                     <input type="button" value="stop animation" onclick="animation.stop();
@@ -72,6 +84,9 @@
             Your browser doesn't support canvas. Sorry, no drawings for you.
         </canvas>
         <div class="moon-container">
+                <div class="logo-container">
+                    <img src="logo.png" />
+                </div>
             <canvas id="moon" width="700" height="700">
                 Your browser doesn't support canvas. Sorry, no drawings for you.
             </canvas>
